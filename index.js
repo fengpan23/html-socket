@@ -55,8 +55,8 @@ util.inherits(HSocket, EventEmitter);
  * 4. on disconnect
  */
 module.exports = {
-    createClient: function () {
-        return new HSocket();
+    createClient: function (options) {
+        return new HSocket(options);
     }
 };
 
