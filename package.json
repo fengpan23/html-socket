@@ -1,0 +1,22 @@
+{
+  "name": "html-socket",
+  "version": "1.0.0",
+  "description": "websocket html5",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.stargt.com.my:pan.feng/html-socket.git"
+  },
+  "keywords": [
+    "html5",
+    "websocket"
+  ],
+  "author": "fengpan",
+  "license": "ISC",
+  "dependencies": {
+    "ws": "git+https://pan.feng:fengpan123@gitlab.stargt.com.my/pan.feng/ws.git"
+  }
+}
