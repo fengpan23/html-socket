@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <script>
+        var ws = new WebSocket("ws://127.0.0.1:3000");
+        ws.sendData = function(data){
+            ws.send(JSON.stringify(data));
+        };
+        ws.onmessage = function (evt) {
+                console.log('WebSocketClosed on message : ', evt);
+        };
+        ws.onopen = function(){
+            console.log('open');
+            ws.sendData({event: 'login', content: {tableid : 68, gameid : 100006, session : 'whx1'}});
+            ws.sendData({event: 'sitdown', content: {seatindex: 1}});
+        };
+        ws.onclose = function(evt){
+            console.log('WebSocketClosed!', evt);
+        };
+        ws.onerror = function(evt){
+            console.log('WebSocketError!');
+        };
+    </script>
+</body>
+</html>

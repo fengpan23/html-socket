@@ -5,26 +5,45 @@ const WebSocketServer = require('ws').Server;
 const Client = require('./lib/client');
 
 class HSocket{
-    constructor(ip, port) {
+    /**
+     * @param ip    game server ip
+     * @param gamePort  game server port
+     * @param webPort   created web server port
+     */
+    constructor(options) {
         EventEmitter.call(this);
-        ip = ip || '127.0.0.1', port = port || 8888;
-        this.client = new Client();
-        let me = this;
-        this.client.on('request', function (id, event, content) {
-            console.log('id, event, content', id, event, content);
-        }).on('connected', function () {
-            me.emit('connected', me.client);
-            console.info('connected: ' + ip, ': ', port);
-        }).on('disconnect', function () {
-            me.emit('disconnect', me.client);
-        }).on('error', function () {
-            console.log('client error@!!');
-        })
-        this.client.connect(ip, port);
-    };
+        let ip = options.ip || '127.0.0.1', gamePort = options.gamePort || 8888, webPort = options.webPort || 8000;
 
-    send(event, content) {
-        this.client.send(1, event, content);
+        let me = this;
+        let wss = new WebSocketServer({port: webPort});
+        wss.on('connection', function(ws) {
+            let client = new Client();
+            client.on('request', function (id, event, content) {
+                console.log('id: ', id, ' event: ', event, ' content: ', content);
+                ws.send({event: event, content:content});
+            }).on('connected', function() {
+                console.info('connected: ' + ip, ': ', port);
+
+                me.emit('connected', ws);
+            }).on('disconnect', function () {
+                me.emit('disconnect', client);
+            }).on('error', function() {
+                console.log('client error!!!');
+
+                me.emit('error', client);
+            })
+            client.connect(ip, gamePort);
+
+            ws.on('message', function incoming(message) {
+                console.log('incoming message : ', message);
+                try{
+                    let data = JSON.parse(message);
+                    client.send({id: 1, event: data.event, content: data.content});
+                }catch(e){
+                    me.emit('error', 'incoming data error !')
+                }
+            });
+        });
     };
 }
 util.inherits(HSocket, EventEmitter);
@@ -43,8 +62,12 @@ module.exports = {
 
 //example
 if (require.main !== module) return;
-var client = new HSocket('127.0.0.1', 8888);
+var options = {
+    ip: '127.0.0.1',
+    gamePort: 8888,
+    webPort: 3000
+}
+var client = new HSocket(options);
 client.on('connected', function () {
-    client.send("login", {tableid : 68, gameid : 100006, session : 'whx1'});
-    client.send('sitdown', {seatindex: 1});
+    console.log('connected !!!');
 })
