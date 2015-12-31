@@ -2,7 +2,7 @@
 html5 WebSocket can send message directly to game server
 
 ### Installing
-npm install
+npm install html-socket --save
 
 ### example
 ##### server

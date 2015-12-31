@@ -22,7 +22,7 @@ class HSocket{
                 console.log('id: ', id, ' event: ', event, ' content: ', content);
                 ws.send({event: event, content:content});
             }).on('connected', function() {
-                console.info('connected: ' + ip, ': ', port);
+                console.info('connected: ' + ip, ': ', gamePort);
 
                 me.emit('connected', ws);
             }).on('disconnect', function () {
