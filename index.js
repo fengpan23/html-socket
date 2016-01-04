@@ -20,7 +20,7 @@ class HSocket{
             let client = new Client();
             client.on('request', function (id, event, content) {
                 console.log('id: ', id, ' event: ', event, ' content: ', content);
-                ws.send({event: event, content:content});
+                ws.send(JSON.stringify({event: event, content:content}));
             }).on('connected', function() {
                 console.info('connected: ' + ip, ': ', gamePort);
 
