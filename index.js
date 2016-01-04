@@ -24,9 +24,9 @@ class HSocket{
             }).on('connected', function() {
                 console.info('connected: ' + ip, ': ', gamePort);
 
-                me.emit('connected', ws);
+                me.emit('connected');
             }).on('disconnect', function () {
-                me.emit('disconnect', client);
+                me.emit('disconnect');
             }).on('error', function() {
                 console.log('client error!!!');
 
@@ -38,8 +38,11 @@ class HSocket{
                 console.log('incoming message : ', message);
                 try{
                     let data = JSON.parse(message);
-                    client.send({id: 1, event: data.event, content: data.content});
+                    if(data.event){
+                        client.send(0, data.event, data.content);
+                    }
                 }catch(e){
+                    console.error('parse incoming message error !!');
                     me.emit('error', 'incoming data error !')
                 }
             });
@@ -49,10 +52,10 @@ class HSocket{
 util.inherits(HSocket, EventEmitter);
 /**
  * event
- * 1. on data
- * 2. on close
- * 3. on connected
- * 4. on disconnect
+ * 1. on close
+ * 2. on connected
+ * 3. on disconnect
+ * 4. on error
  */
 module.exports = {
     createClient: function (options) {
