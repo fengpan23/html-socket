@@ -19,8 +19,7 @@ class HSocket{
         wss.on('connection', function(ws) {
             let client = new Client();
             client.on('request', function (id, event, content) {
-                console.log('id: ', id, '\nevent: ', event, '\ncontent: ', content);
-                ws.send(JSON.stringify({event: event, content:content}));
+                ws.send(JSON.stringify({event: event, content: content}));
             }).on('connected', function() {
                 console.info('connected: ' + ip, ': ', gamePort);
 
