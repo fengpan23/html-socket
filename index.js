@@ -21,20 +21,18 @@ class HSocket{
             client.on('request', function (id, event, content) {
                 ws.send(JSON.stringify({event: event, content: content}));
             }).on('connected', function() {
-                console.info('connected: ' + ip, ': ', gamePort);
-
+                console.info('Connected game server: ' + ip, ': ', gamePort);
                 me.emit('connected');
             }).on('disconnect', function () {
                 me.emit('disconnect');
             }).on('error', function() {
-                console.log('client error!!!');
-
+                console.info('Game server client error!!!');
                 me.emit('error', client);
             })
             client.connect(ip, gamePort);
 
             ws.on('message', function incoming(message) {
-                console.log('incoming message : ', message);
+                console.log('Incoming message : ', message);
                 try{
                     let data = JSON.parse(message);
                     if(data.event){
