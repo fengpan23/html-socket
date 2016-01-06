@@ -32,14 +32,14 @@ class HSocket{
             client.connect(ip, gamePort);
 
             ws.on('message', function incoming(message) {
-                console.log('Incoming message : ', message);
+                console.info('Incoming message : ', message);
                 try{
                     let data = JSON.parse(message);
                     if(data.event){
                         client.send(0, data.event, data.content);
                     }
                 }catch(e){
-                    console.error('parse incoming message error !!');
+                    console.error('Parse incoming message error !!');
                     me.emit('error', 'incoming data error !')
                 }
             });
