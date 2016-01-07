@@ -17,32 +17,33 @@ class HSocket{
         let me = this;
         let wss = new WebSocketServer({port: webPort});
         wss.on('connection', function(ws) {
+            console.log(ws);
             let client = new Client();
             client.on('request', function (id, event, content) {
                 ws.send(JSON.stringify({event: event, content: content}));
             }).on('connected', function() {
-                console.info('Connected game server: ' + ip, ': ', gamePort);
+                console.info('Connected game server: ' + ip, ':', gamePort);
+                ws.send(JSON.stringify({state: 'connected'}));
+                ws.on('message', function incoming(message) {
+                    console.info('Incoming message : ', message);
+                    try{
+                        let data = JSON.parse(message);
+                        if(data.event){
+                            client.send(0, data.event, data.content);
+                        }
+                    }catch(e){
+                        console.error('Parse incoming message error !!');
+                        me.emit('error', 'incoming data error !')
+                    }
+                });
                 me.emit('connected');
             }).on('disconnect', function () {
                 me.emit('disconnect');
             }).on('error', function() {
-                console.info('Game server client error!!!');
+                console.info('Game server error !!! ');
                 me.emit('error', client);
             })
             client.connect(ip, gamePort);
-
-            ws.on('message', function incoming(message) {
-                console.info('Incoming message : ', message);
-                try{
-                    let data = JSON.parse(message);
-                    if(data.event){
-                        client.send(0, data.event, data.content);
-                    }
-                }catch(e){
-                    console.error('Parse incoming message error !!');
-                    me.emit('error', 'incoming data error !')
-                }
-            });
         });
     };
 }
