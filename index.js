@@ -17,7 +17,6 @@ class HSocket{
         let me = this;
         let wss = new WebSocketServer({port: webPort});
         wss.on('connection', function(ws) {
-            console.log(ws);
             let client = new Client();
             client.on('request', function (id, event, content) {
                 ws.send(JSON.stringify({event: event, content: content}));
